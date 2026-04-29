@@ -1,8 +1,9 @@
-import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import TopBar from './components/TopBar'
 import BottomNav from './components/BottomNav'
 import MoreDrawer from './components/MoreDrawer'
+import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import Flock from './pages/Flock'
 import BirdDetail from './pages/BirdDetail'
@@ -16,8 +17,28 @@ import Detect from './pages/Detect'
 import Health from './pages/Health'
 import Showcase from './pages/Showcase'
 
+// Simple auth check
+function useAuth() {
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('saquic_user')
+    return saved ? JSON.parse(saved) : null
+  })
+  return user
+}
+
 export default function App() {
   const [moreOpen, setMoreOpen] = useState(false)
+  const user = useAuth()
+
+  // If no user, redirect to landing
+  if (!user) {
+    return (
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    )
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-cream">
@@ -36,6 +57,7 @@ export default function App() {
           <Route path="/detect" element={<Detect />} />
           <Route path="/health" element={<Health />} />
           <Route path="/showcase" element={<Showcase />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
       <BottomNav onMore={() => setMoreOpen(true)} />

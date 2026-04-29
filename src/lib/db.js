@@ -9,6 +9,13 @@ function lsSet(key, val) {
 }
 function lsId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6) }
 
+// Generate the next bird number
+function getNextBirdNumber(birds) {
+  const numbers = birds.filter(b => b.bird_number).map(b => b.bird_number)
+  if (numbers.length === 0) return 1
+  return Math.max(...numbers) + 1
+}
+
 // ── BIRDS ──────────────────────────────────────────────────────────────────
 export async function getBirds() {
   if (supabase) {
@@ -20,13 +27,14 @@ export async function getBirds() {
 }
 
 export async function addBird(bird) {
-  const record = { ...bird, id: lsId(), created_at: new Date().toISOString() }
+  const birds = lsGet('birds', DEMO_BIRDS)
+  const birdNumber = bird.bird_number || getNextBirdNumber(birds)
+  const record = { ...bird, id: lsId(), bird_number: birdNumber, created_at: new Date().toISOString() }
   if (supabase) {
-    const { data, error } = await supabase.from('birds').insert([bird]).select().single()
+    const { data, error } = await supabase.from('birds').insert([record]).select().single()
     if (error) throw error
     return data
   }
-  const birds = lsGet('birds', DEMO_BIRDS)
   lsSet('birds', [record, ...birds])
   return record
 }
@@ -162,12 +170,12 @@ export async function addWeightLog(log) {
 
 // ── DEMO DATA ──────────────────────────────────────────────────────────────
 export const DEMO_BIRDS = [
-  { id: 'b1', name_en: 'El Rojo', name_es: 'El Rojo', breed: 'Kelso Gamefowl', sex: 'M', age_months: 24, bloodline: 'Old Boston Kelso', weight_kg: 2.4, temperament: 'Aggressive', tags: ['show', 'breeder'], available: false, behaviors: ['aggressive', 'active'], egg_color: null, emoji: '🐓', notes_en: 'Champion bloodline, sharp reflexes.', notes_es: 'Línea campeona, reflejos agudos.', father_id: null, mother_id: null, hatch_date: '2022-04-15' },
-  { id: 'b2', name_en: 'Reina', name_es: 'Reina', breed: 'Rhode Island Red', sex: 'F', age_months: 18, bloodline: 'Mahogany Line', weight_kg: 2.9, temperament: 'Calm', tags: ['breeder'], available: true, behaviors: ['calm', 'vocal'], egg_color: 'brown', emoji: '🐔', notes_en: 'Excellent layer, very consistent.', notes_es: 'Excelente ponedora, muy consistente.', father_id: null, mother_id: null, hatch_date: '2022-10-01' },
-  { id: 'b3', name_en: 'Luna', name_es: 'Luna', breed: 'Ameraucana', sex: 'F', age_months: 14, bloodline: 'Blue Beard', weight_kg: 2.2, temperament: 'Calm', tags: ['for-sale'], available: true, behaviors: ['broody', 'calm'], egg_color: 'blue', emoji: '🐔', notes_en: 'Lays beautiful blue eggs.', notes_es: 'Pone hermosos huevos azules.', father_id: null, mother_id: null, hatch_date: '2023-02-20' },
-  { id: 'b4', name_en: 'Titan', name_es: 'Titán', breed: 'Brahma', sex: 'M', age_months: 30, bloodline: 'Dark Brahma Heritage', weight_kg: 5.1, temperament: 'Gentle', tags: ['breeder', 'show'], available: false, behaviors: ['calm', 'active'], egg_color: null, emoji: '🐓', notes_en: 'Gentle giant, excellent sire.', notes_es: 'Gigante gentil, excelente semental.', father_id: null, mother_id: null, hatch_date: '2021-10-10' },
-  { id: 'b5', name_en: 'Blanca', name_es: 'Blanca', breed: 'Leghorn', sex: 'F', age_months: 12, bloodline: 'Single Comb White', weight_kg: 1.8, temperament: 'Active', tags: ['breeder'], available: true, behaviors: ['active', 'vocal'], egg_color: 'white', emoji: '🐔', notes_en: 'Top producer, lays daily.', notes_es: 'Mejor productora, pone a diario.', father_id: null, mother_id: null, hatch_date: '2023-04-05' },
-  { id: 'b6', name_en: 'Shadow', name_es: 'Sombra', breed: 'Sweater Gamefowl', sex: 'M', age_months: 20, bloodline: 'Sweater Grey', weight_kg: 2.1, temperament: 'Aggressive', tags: ['show'], available: false, behaviors: ['aggressive'], egg_color: null, emoji: '🐓', notes_en: 'Fast and high-stationed.', notes_es: 'Rápido y de alta estatura.', father_id: null, mother_id: null, hatch_date: '2022-08-12' },
+  { id: 'b1', bird_number: 1, name_en: 'El Rojo', name_es: 'El Rojo', breed: 'Kelso Gamefowl', sex: 'M', age_months: 24, bloodline: 'Old Boston Kelso', weight_kg: 2.4, temperament: 'Aggressive', tags: ['show', 'breeder'], available: false, behaviors: ['aggressive', 'active'], egg_color: null, emoji: '🐓', notes_en: 'Champion bloodline, sharp reflexes.', notes_es: 'Línea campeona, reflejos agudos.', father_id: null, mother_id: null, hatch_date: '2022-04-15' },
+  { id: 'b2', bird_number: 2, name_en: 'Reina', name_es: 'Reina', breed: 'Rhode Island Red', sex: 'F', age_months: 18, bloodline: 'Mahogany Line', weight_kg: 2.9, temperament: 'Calm', tags: ['breeder'], available: true, behaviors: ['calm', 'vocal'], egg_color: 'brown', emoji: '🐔', notes_en: 'Excellent layer, very consistent.', notes_es: 'Excelente ponedora, muy consistente.', father_id: null, mother_id: null, hatch_date: '2022-10-01' },
+  { id: 'b3', bird_number: 3, name_en: 'Luna', name_es: 'Luna', breed: 'Ameraucana', sex: 'F', age_months: 14, bloodline: 'Blue Beard', weight_kg: 2.2, temperament: 'Calm', tags: ['for-sale'], available: true, behaviors: ['broody', 'calm'], egg_color: 'blue', emoji: '🐔', notes_en: 'Lays beautiful blue eggs.', notes_es: 'Pone hermosos huevos azules.', father_id: null, mother_id: null, hatch_date: '2023-02-20' },
+  { id: 'b4', bird_number: 4, name_en: 'Titan', name_es: 'Titán', breed: 'Brahma', sex: 'M', age_months: 30, bloodline: 'Dark Brahma Heritage', weight_kg: 5.1, temperament: 'Gentle', tags: ['breeder', 'show'], available: false, behaviors: ['calm', 'active'], egg_color: null, emoji: '🐓', notes_en: 'Gentle giant, excellent sire.', notes_es: 'Gigante gentil, excelente semental.', father_id: null, mother_id: null, hatch_date: '2021-10-10' },
+  { id: 'b5', bird_number: 5, name_en: 'Blanca', name_es: 'Blanca', breed: 'Leghorn', sex: 'F', age_months: 12, bloodline: 'Single Comb White', weight_kg: 1.8, temperament: 'Active', tags: ['breeder'], available: true, behaviors: ['active', 'vocal'], egg_color: 'white', emoji: '🐔', notes_en: 'Top producer, lays daily.', notes_es: 'Mejor productora, pone a diario.', father_id: null, mother_id: null, hatch_date: '2023-04-05' },
+  { id: 'b6', bird_number: 6, name_en: 'Shadow', name_es: 'Sombra', breed: 'Sweater Gamefowl', sex: 'M', age_months: 20, bloodline: 'Sweater Grey', weight_kg: 2.1, temperament: 'Aggressive', tags: ['show'], available: false, behaviors: ['aggressive'], egg_color: null, emoji: '🐓', notes_en: 'Fast and high-stationed.', notes_es: 'Rápido y de alta estatura.', father_id: null, mother_id: null, hatch_date: '2022-08-12' },
 ]
 
 export const DEMO_EGG_LOGS = Array.from({ length: 30 }, (_, i) => {

@@ -8,5 +8,16 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 export const supabase = supabaseUrl && supabaseKey
-  ? createClient(supabaseUrl, supabaseKey)
+  ? createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: false
+      }
+    })
   : null
+
+// Simple auth helpers
+export function getAuth() {
+  return supabase?.auth
+}

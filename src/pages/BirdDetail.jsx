@@ -42,8 +42,12 @@ export default function BirdDetail() {
   return (
     <div className="p-4 pb-24">
       {/* Photo */}
-      <div className={`w-full h-52 bg-warm rounded-2xl flex items-center justify-center text-8xl mb-4 overflow-hidden transition-all duration-300 ${filterStyles[photoMode]}`}>
-        {emoji}
+      <div className={`w-full h-52 bg-warm rounded-2xl flex items-center justify-center mb-4 overflow-hidden transition-all duration-300 ${filterStyles[photoMode]}`}>
+        {bird.photo_url ? (
+          <img src={bird.photo_url} alt={name} className="w-full h-full object-cover" />
+        ) : (
+          <span className="text-8xl">{emoji}</span>
+        )}
       </div>
 
       {/* Photo filters */}

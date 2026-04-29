@@ -171,6 +171,8 @@ export const translations = {
     confirmDelete: 'Delete this record?',
     saved: 'Saved!',
     addedSuccessfully: 'Bird added successfully.',
+    hens: 'Hens',
+    birdNumber: 'Number',
   },
   es: {
     appName: 'SAQUIC',
@@ -344,6 +346,8 @@ export const translations = {
     confirmDelete: '¿Eliminar este registro?',
     saved: '¡Guardado!',
     addedSuccessfully: 'Ave agregada exitosamente.',
+    hens: 'Hembras',
+    birdNumber: 'Número',
   }
 }
 

@@ -7,6 +7,7 @@
 create table if not exists birds (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz default now(),
+  bird_number integer,  -- user-assigned bird number
   name_en text not null,
   name_es text,
   breed text,
@@ -27,6 +28,9 @@ create table if not exists birds (
   emoji text default '🐓',
   photo_url text
 );
+
+-- Add index on bird_number for fast lookups
+create index if not exists idx_birds_number on birds(bird_number);
 
 -- EGG LOGS
 create table if not exists egg_logs (
@@ -98,11 +102,11 @@ create policy "allow all hatch_logs" on hatch_logs for all using (true) with che
 create policy "allow all weight_logs" on weight_logs for all using (true) with check (true);
 
 -- SEED demo data
-insert into birds (name_en, name_es, breed, sex, age_months, bloodline, weight_kg, temperament, tags, behaviors, available, egg_color, emoji, hatch_date, notes_en, notes_es)
+insert into birds (bird_number, name_en, name_es, breed, sex, age_months, bloodline, weight_kg, temperament, tags, behaviors, available, egg_color, emoji, hatch_date, notes_en, notes_es)
 values
-  ('El Rojo','El Rojo','Kelso Gamefowl','M',24,'Old Boston Kelso',2.4,'Aggressive','{show,breeder}','{aggressive,active}',false,null,'🐓','2022-04-15','Champion bloodline, sharp reflexes.','Línea campeona, reflejos agudos.'),
-  ('Reina','Reina','Rhode Island Red','F',18,'Mahogany Line',2.9,'Calm','{breeder}','{calm,vocal}',true,'brown','🐔','2022-10-01','Excellent layer, very consistent.','Excelente ponedora, muy consistente.'),
-  ('Luna','Luna','Ameraucana','F',14,'Blue Beard',2.2,'Calm','{for-sale}','{broody,calm}',true,'blue','🐔','2023-02-20','Lays beautiful blue eggs.','Pone hermosos huevos azules.'),
-  ('Titan','Titán','Brahma','M',30,'Dark Brahma Heritage',5.1,'Gentle','{breeder,show}','{calm,active}',false,null,'🐓','2021-10-10','Gentle giant, excellent sire.','Gigante gentil, excelente semental.'),
-  ('Blanca','Blanca','Leghorn','F',12,'Single Comb White',1.8,'Active','{breeder}','{active,vocal}',true,'white','🐔','2023-04-05','Top producer, lays daily.','Mejor productora, pone a diario.'),
-  ('Shadow','Sombra','Sweater Gamefowl','M',20,'Sweater Grey',2.1,'Aggressive','{show}','{aggressive}',false,null,'🐓','2022-08-12','Fast and high-stationed.','Rápido y de alta estatura.');
+  (1, 'El Rojo','El Rojo','Kelso Gamefowl','M',24,'Old Boston Kelso',2.4,'Aggressive','{show,breeder}','{aggressive,active}',false,null,'🐓','2022-04-15','Champion bloodline, sharp reflexes.','Línea campeona, reflejos agudos.'),
+  (2, 'Reina','Reina','Rhode Island Red','F',18,'Mahogany Line',2.9,'Calm','{breeder}','{calm,vocal}',true,'brown','🐔','2022-10-01','Excellent layer, very consistent.','Excelente ponedora, muy consistente.'),
+  (3, 'Luna','Luna','Ameraucana','F',14,'Blue Beard',2.2,'Calm','{for-sale}','{broody,calm}',true,'blue','🐔','2023-02-20','Lays beautiful blue eggs.','Pone hermosos huevos azules.'),
+  (4, 'Titan','Titán','Brahma','M',30,'Dark Brahma Heritage',5.1,'Gentle','{breeder,show}','{calm,active}',false,null,'🐓','2021-10-10','Gentle giant, excellent sire.','Gigante gentil, excelente semental.'),
+  (5, 'Blanca','Blanca','Leghorn','F',12,'Single Comb White',1.8,'Active','{breeder}','{active,vocal}',true,'white','🐔','2023-04-05','Top producer, lays daily.','Mejor productividad, pone a diario.'),
+  (6, 'Shadow','Sombra','Sweater Gamefowl','M',20,'Sweater Grey',2.1,'Aggressive','{show}','{aggressive}',false,null,'🐓','2022-08-12','Fast and high-stationed.','Rápido y de alta estatura.');

@@ -52,8 +52,13 @@ export default function Flock() {
           {filtered.map(b => (
             <div key={b.id} onClick={() => navigate(`/bird/${b.id}`)}
               className="bg-white rounded-xl border border-deep/10 overflow-hidden cursor-pointer active:scale-95 transition-transform">
-              <div className="h-28 bg-warm flex items-center justify-center text-5xl">{b.emoji || (b.sex==='M'?'🐓':'🐔')}</div>
+              {b.photo_url ? (
+                <img src={b.photo_url} alt={b.name_en} className="w-full h-28 object-cover" />
+              ) : (
+                <div className="h-28 bg-warm flex items-center justify-center text-5xl">{b.emoji || (b.sex==='M'?'🐓':'🐔')}</div>
+              )}
               <div className="p-2.5">
+                <div className="text-[10px] text-rust font-bold">#{b.bird_number}</div>
                 <div className="font-serif font-semibold text-sm text-deep truncate">{lang==='es'?b.name_es:b.name_en}</div>
                 <div className="text-xs text-earth mt-0.5 truncate">{b.breed}</div>
                 <div className="text-[10px] text-tan mt-0.5">{b.age_months} {t('months')} · {b.weight_kg} kg</div>

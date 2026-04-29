@@ -31,10 +31,10 @@ export default function AddBird() {
   const { t, lang } = useLang()
   const navigate = useNavigate()
   const [form, setForm] = useState({
-    name_en: '', name_es: '', breed: BREEDS[0], sex: 'M',
+    bird_number: '', name_en: '', name_es: '', breed: BREEDS[0], sex: 'M',
     age_months: '', weight_kg: '', bloodline: '', temperament: '',
     egg_color: '', hatch_date: '', tags: [], available: false,
-    behaviors: [], notes_en: '', notes_es: '', emoji: '🐓'
+    behaviors: [], notes_en: '', notes_es: '', photo_url: ''
   })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -63,6 +63,18 @@ export default function AddBird() {
     set('behaviors', form.behaviors.includes(b) ? form.behaviors.filter(x => x !== b) : [...form.behaviors, b])
   }
 
+  function handlePhotoChange(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    // Create a local URL for preview - this works for localStorage demo mode
+    // For Supabase, we'll upload to Supabase Storage
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      set('photo_url', ev.target.result)
+    }
+    reader.readAsDataURL(file)
+  }
+
   async function handleSave() {
     if (!form.name_en && !form.name_es) return
     setSaving(true)
@@ -88,12 +100,31 @@ export default function AddBird() {
 
       {saved && <Alert type="success">{t('addedSuccessfully')}</Alert>}
 
-      {/* Photo placeholder */}
-      <div className="w-full h-36 bg-warm rounded-xl border-2 border-dashed border-tan flex flex-col items-center justify-center mb-4 cursor-pointer active:bg-tan/20 transition-colors">
-        <div className="text-4xl mb-1">📸</div>
-        <div className="text-xs text-earth">{t('uploadPhoto')}</div>
-        <div className="text-[10px] text-tan">{lang==='es'?'Detección automática de raza':'Auto breed detection'}</div>
-      </div>
+      {/* Photo upload */}
+      <Card className="mb-4">
+        <label className="block cursor-pointer">
+          {form.photo_url ? (
+            <div className="relative">
+              <img src={form.photo_url} alt="Bird" className="w-full h-36 object-cover rounded-lg" />
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg opacity-0 hover:opacity-100 transition-opacity">
+                <span className="text-white text-sm">{t('changePhoto') || 'Change Photo'}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="w-full h-36 bg-warm rounded-xl border-2 border-dashed border-tan flex flex-col items-center justify-center">
+              <div className="text-4xl mb-1">📸</div>
+              <div className="text-xs text-earth">{t('uploadPhoto')}</div>
+            </div>
+          )}
+          <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+        </label>
+      </Card>
+
+      <Card className="mb-4">
+        <div className="font-medium text-sm text-deep mb-3">{lang==='es'?'Número de Ave':'Bird Number'}</div>
+        <Input label={t('birdNumber') || 'Number'} id="bird_number" type="number" value={form.bird_number}
+          onChange={e => set('bird_number', e.target.value)} placeholder="Auto if empty" />
+      </Card>
 
       <Card className="mb-4">
         <div className="font-medium text-sm text-deep mb-3">{lang==='es'?'Nombres (bilingüe)':'Names (bilingual)'}</div>
