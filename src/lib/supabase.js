@@ -1,24 +1,14 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Standard Supabase env vars (works with Vercel and local .env)
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || import.meta.env.SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY
+// In Vercel, non-prefixed env vars get VITE_ prefix automatically during build
+// If those aren't available, fall back to non-prefixed versions
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || import.meta.env.SUPABASE_URL || ''
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.SUPABASE_ANON_KEY || import.meta.env.SUPABASE_PUBLISHABLE_KEY || ''
 
 if (!supabaseUrl || !supabaseKey) {
-  console.warn('Supabase env vars missing — running in demo mode (localStorage fallback).')
+  console.warn('Supabase env vars missing — running in demo mode')
 }
 
-export const supabase = supabaseUrl && supabaseKey
-  ? createClient(supabaseUrl, supabaseKey, {
-      auth: {
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: false
-      }
-    })
+export const supabase = (supabaseUrl && supabaseKey) 
+  ? createClient(supabaseUrl, supabaseKey, { auth: { autoRefreshToken: true, persistSession: true } })
   : null
-
-// Simple auth helpers
-export function getAuth() {
-  return supabase?.auth
-}
