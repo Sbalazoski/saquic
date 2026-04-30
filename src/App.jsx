@@ -21,7 +21,7 @@ import Showcase from './pages/Showcase'
 function useAuth() {
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('saquic_user')
-    return saved ? JSON.parse(saved) : null
+    return saved ? saved : null
   })
   return user
 }
