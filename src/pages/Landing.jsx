@@ -14,7 +14,7 @@ export default function Landing() {
 
   function handleStart() {
     localStorage.setItem('saquic_user', 'demo')
-    navigate('/')
+    window.location.href = '/'
   }
 
   if (loading) {
