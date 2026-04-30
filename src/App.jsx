@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import TopBar from './components/TopBar'
 import BottomNav from './components/BottomNav'
 import MoreDrawer from './components/MoreDrawer'
@@ -17,7 +17,12 @@ import Health from './pages/Health'
 import Showcase from './pages/Showcase'
 
 // Landing page component
-function LandingPage({ onStart }) {
+function LandingPage() {
+  function handleStart() {
+    localStorage.setItem('saquic_user', 'demo')
+    window.location.reload()
+  }
+  
   return (
     <div className="min-h-screen bg-cream flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
@@ -25,7 +30,7 @@ function LandingPage({ onStart }) {
         <h1 className="text-4xl font-serif text-deep mb-2">SAQUIC</h1>
         <p className="text-earth text-lg mb-8">Fine Poultry Breeder</p>
         <button 
-          onClick={onStart}
+          onClick={handleStart}
           className="w-full max-w-sm bg-rust text-white font-medium py-3 px-4 rounded-lg hover:bg-deep transition-colors"
         >
           Get Started
@@ -37,26 +42,15 @@ function LandingPage({ onStart }) {
 
 export default function App() {
   const [moreOpen, setMoreOpen] = useState(false)
-  const [inApp, setInApp] = useState(false)
-  
-  // Check localStorage on mount
-  useEffect(() => {
-    const user = localStorage.getItem('saquic_user')
-    if (user === 'demo') {
-      setInApp(true)
-    }
-  }, [])
-  
-  function handleStart() {
-    localStorage.setItem('saquic_user', 'demo')
-    setInApp(true)
-  }
-  
+  const [inApp, setInApp] = useState(() => {
+    return localStorage.getItem('saquic_user') === 'demo'
+  })
+
   // If not in app mode, show landing
   if (!inApp) {
-    return <LandingPage onStart={handleStart} />
+    return <LandingPage />
   }
-  
+
   // Otherwise show app
   return (
     <div className="flex flex-col min-h-screen bg-cream">
