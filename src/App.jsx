@@ -17,21 +17,13 @@ import Detect from './pages/Detect'
 import Health from './pages/Health'
 import Showcase from './pages/Showcase'
 
-// Simple auth check
-function useAuth() {
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('saquic_user')
-    return saved ? saved : null
-  })
-  return user
-}
-
 export default function App() {
   const [moreOpen, setMoreOpen] = useState(false)
-  const user = useAuth()
+  const [showApp, setShowApp] = useState(() => {
+    return localStorage.getItem('saquic_user') === 'demo'
+  })
 
-  // If no user, redirect to landing
-  if (!user) {
+  if (!showApp) {
     return (
       <Routes>
         <Route path="/" element={<Landing />} />
