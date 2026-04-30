@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import TopBar from './components/TopBar'
 import BottomNav from './components/BottomNav'
@@ -16,22 +16,66 @@ import Detect from './pages/Detect'
 import Health from './pages/Health'
 import Showcase from './pages/Showcase'
 
-// Landing page component
+// Simple style object
+const styles = {
+  container: {
+    minHeight: '100vh',
+    backgroundColor: '#F7F3EE',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  content: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '20px',
+    textAlign: 'center',
+  },
+  emoji: {
+    fontSize: '60px',
+    marginBottom: '16px',
+  },
+  title: {
+    fontSize: '36px',
+    fontFamily: 'Georgia, serif',
+    color: '#5C3317',
+    marginBottom: '8px',
+  },
+  subtitle: {
+    fontSize: '18px',
+    color: '#8B7355',
+    marginBottom: '32px',
+  },
+  button: {
+    width: '100%',
+    maxWidth: '280px',
+    backgroundColor: '#A0522D',
+    color: 'white',
+    fontWeight: '500',
+    padding: '14px 20px',
+    borderRadius: '8px',
+    border: 'none',
+    cursor: 'pointer',
+  },
+}
+
 function LandingPage() {
   function handleStart() {
     localStorage.setItem('saquic_user', 'demo')
     window.location.reload()
   }
-  
+
   return (
-    <div className="min-h-screen bg-cream flex flex-col">
-      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-        <div className="text-6xl mb-4">🐓</div>
-        <h1 className="text-4xl font-serif text-deep mb-2">SAQUIC</h1>
-        <p className="text-earth text-lg mb-8">Fine Poultry Breeder</p>
+    <div style={styles.container}>
+      <div style={styles.content}>
+        <div style={styles.emoji}>🐓</div>
+        <h1 style={styles.title}>SAQUIC</h1>
+        <p style={styles.subtitle}>Fine Poultry Breeder</p>
         <button 
+          style={styles.button}
           onClick={handleStart}
-          className="w-full max-w-sm bg-rust text-white font-medium py-3 px-4 rounded-lg hover:bg-deep transition-colors"
         >
           Get Started
         </button>
@@ -42,20 +86,16 @@ function LandingPage() {
 
 export default function App() {
   const [moreOpen, setMoreOpen] = useState(false)
-  const [inApp, setInApp] = useState(() => {
-    return localStorage.getItem('saquic_user') === 'demo'
-  })
+  const inApp = localStorage.getItem('saquic_user') === 'demo'
 
-  // If not in app mode, show landing
   if (!inApp) {
     return <LandingPage />
   }
 
-  // Otherwise show app
   return (
-    <div className="flex flex-col min-h-screen bg-cream">
+    <div style={styles.container}>
       <TopBar />
-      <main className="flex-1 overflow-y-auto">
+      <main style={{flex: 1, overflowY: 'auto'}}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/flock" element={<Flock />} />
